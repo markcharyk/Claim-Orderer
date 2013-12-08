@@ -1,0 +1,6 @@
+This program is intended to produce an ordering of claims as they would appear in an International Search Report drafted according to the Patent Cooperation Treaty.
+The order of claims is determined by the references used to obviate it, and the order in which the references are introduced.
+
+To use the orderer, enter each claim and its parent claim one by one.
+Then enter the references used as per the instructions.
+The program will output the claims in the appropriate order.
