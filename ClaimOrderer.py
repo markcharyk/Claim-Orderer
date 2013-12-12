@@ -56,6 +56,12 @@ class ClaimList(object):
 		self.get_claim(clm).add_ref(ref)
 		for i in self.get_claim(clm).get_dependents():
 			self.add_reference(i, ref)
+			
+	# Delete a reference from a claim and its dependents
+	def delete_reference(self, clm, ref):
+		self.get_claim(clm).del_ref(ref)
+		for i in self.get_claim(clm).get_dependents():
+			self.delete_reference(i, ref)
 	
 	# Assign a reference order number to each claim	
 	def determine_ref_order(self):
@@ -131,6 +137,14 @@ class Claim(object):
 		self.references.append(ref)
 		self.num_refs += 1
 		
+	# Delete a reference from the claim's rejection	
+	def del_ref(self, ref):
+		if self.references.count(ref) == 1:
+			# The reference is found in the list; remove it
+			self.references.remove(ref)
+			self.num_refs -= 1
+		
+		
 	# Get the number representation of the reference order
 	def get_ref_order(self):
 		return self.ref_order
@@ -172,28 +186,46 @@ def main():
 		
 		# Add the claim to the ClaimList		
 		claim_lst.add_claim(Claim(num,dep))
-			
-	imp = int(input("Add a reference to claim (If finished use 0): "))
-	while(imp != 0):
-		# Get the reference to be added to the given claim
-		add_ref = input("Reference name: ")		
-		for i in claim_lst:
-			if i.get_num() == imp:
-				# The given claim is found
-				claim_lst.add_reference(i.get_num(), add_ref)
-		
-		# Repeat until a 0 is input
-		imp = int(input("Add a reference to claim (If finished use 0): "))
 	
-	# Sort the claims
-	claim_lst.sort_by_number()
-	claim_lst.sort_by_ref_num()
-	claim_lst.determine_ref_order()
-	claim_lst.sort_by_ref_order()
+	state = str(input("Add (a), delete (d), print (p), or exit (x)? "))
+	
+	# Allow the user to edit/print the list until they exit the program
+	while(state.lower() != 'x'):
+		if state.lower() == 'a':
+			# Add a reference
+			imp = int(input("Claim number: "))
+			clm = claim_lst.get_claim(imp)
+			if clm is not None:
+				# The claim is found
+				add_ref = input("Reference name: ")
+				claim_lst.add_reference(imp, add_ref)
+				
+		elif state.lower() == 'd':
+			# Delete a reference
+			imp = int(input("Claim number: "))
+			clm = claim_lst.get_claim(imp)
+			if clm is not None:
+				# The claim is found
+				del_ref = input("Reference name: ")
+				claim_lst.delete_reference(imp, del_ref)
+				
+		elif state.lower() == 'p':
+			# Print the claim list
+			# Sort the claims
+			claim_lst.sort_by_number()
+			claim_lst.sort_by_ref_num()
+			claim_lst.determine_ref_order()
+			claim_lst.sort_by_ref_order()
 		
-	# Print out the order	
-	for x in claim_lst:
-		print(str(x))
+			# Print out the order	
+			for x in claim_lst:
+				print(str(x))
+				
+		else:
+			# An incorrect input was received
+			print("Please enter a, d, p, or x.")
+		
+		state = str(input("Add (a), delete (d), print (p), or exit (x)? "))
 		
 	return 0
 
