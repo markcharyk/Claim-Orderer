@@ -23,6 +23,7 @@
 #  
 
 from operator import attrgetter
+from Tkinter import *
 
 class ClaimList(object):
 	# Simply create an empty list for the ClaimList object
